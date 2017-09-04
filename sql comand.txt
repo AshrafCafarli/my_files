@@ -1,0 +1,640 @@
+select * from logix order by id desc
+insert into logix(name,surname,email) values('asraf','ceferli','asraf_ceferli' )
+
+
+select max(id) as maxID from logix
+select AVG(id) as avgID from logix
+select SUM(id) as sumId from logix
+
+select * from logix where name like '%ashra%' 			--bir nece herf ve ya herf olmasa bele
+select * from logix where name like '_s%' 			 --1 herf ucun maska
+
+
+select * from logix where name in('asraf')
+select * from logix where name in (select name from logix where id between  4 and 5)
+
+create table destec(id integer, productName varchar(25),ProductDate date)
+select * from destec
+alter table destec alter column id integer not null
+alter table destec add constraint[Pk_destec] primary key (id) 	--constraint ile primary keyi silmek ucun ad vermeliyik
+
+select GETDATE()  -- bu anki tarix ve saati getiri ekrana
+select DATEPART(year,getdate()) -- hazirki tarixin ilini getririr cvb 2017
+select DATEPART(HH,getdate()) -- hazirki saati getirir  cvb 12
+
+alter table destec add constraint[Pk_destec] foreign key id 	--constraint ile primary keyi silmek ucun ad vermeliyik
+alter table destec drop constraint Pk_destec 			-- silerken constraintde yazdigimiz addan istifade edirik
+
+select * from destec
+alter table destec add constraint[Pk_id] primary key (id)
+insert into destec values(3,'asd','2016.02.25')
+select * from logix inner join destec on logix.id=destec.id
+select logix.id,logix.name,destec.productname from logix left join destec on logix.id=destec.id
+select destec.id,logix.name,logix.surname,destec.productname,destec.productdate from logix right join destec on logix.id=destec.id
+select * from logix full join destec on logix.id=destec.id
+
+select  name as name from logix
+	union all select productname  from destec 		--- hemin bu cedverlleri alt alta birlesdirir
+
+select COUNT(id) from logix group by name			-- riyazi hesablamalarla isleyib alinan neticeni qruplasdirir . meselen burda
+								-- adlara gore qruplasdirib onlarin sayni taparaq uygun idleri ekrana verir
+
+
+create table Cars(id integer identity,model varchar(25),Car_year date,Service_Id integer ,foreign key (id) references driver(id)) ---- foreign key
+
+select * from ServiceCar
+
+select COUNT(servicename) sayi,Servicename from ServiceCar group by Servicename order by sayi
+
+
+select count(name) id,name from logix group by name having count(name)=2 order by id
+
+select * from INFORMATION_SCHEMA.TABLES
+
+select destec.id from destec where exists (select * from logix where id=destec.id)
+
+
+select * from nlogix
+
+select id,surname,name into [nlogix] from logix
+
+drop table nlogix
+
+insert into ndestec(id,dname) select nlogix.id,nlogix.surname from nlogix--- nlogixde id, surname-ni destecde uygun id.dname-e daxil edir
+
+ truncate table asa  					 -- asa adli cedvli silib tekrar yaradir -- bunun sheert vermeden de delete from asa deyerek silmek olar. ancaq yeni melumat artiranda eger id- avtomatik artandisa (identity) ozaman novbeti ededden meselen 100-den basliyacaq . ancaq truncate hershe
+
+
+
+
+select right(tehsil_nov,5) from sm_telebe  		---sagdan 5 character cixarir eekrana
+select LEFT(tehsil_nov,5) from sm_telebe 		-----soldan 5character cixarir ekrana
+select SUBSTRING(tehsil_nov,1,5) from sm_telebe 	-----1den sonra 5 character
+
+
+select UPPER (tehsil_nov )from sm_telebe  		------- boyuk herflerle ekrana cxarir neticeni
+select LOWER(tehsil_nov) from sm_telebe 		--- eger boyukduse kicik herflerle ekrana cixaracaq
+
+
+alter table sm_telebe add yeni_sutun varchar(25)
+alter table sm_telebe alter column yeni_sutun int      --- sutun tipi deismek
+alter table sm_telebe drop column yeni_sutun 
+
+
+select * from sm_telebe where t_name like '[as]%'   	--- baslangici  a v e ya sile basliyanlar
+select * from sm_telebe where t_name like '[^a]%'  	-- baslangici a ile baslamiyanlari ekrana cxartsin
+select * from sm_telebe where t_name like '[a-f]%'   	-- baslangic herfi a ile f arasinda olanlari ekrana cxartsin
+
+
+select distinct t_name,LEN(t_name) from sm_telebe where len(t_name)>2 ---  len herf sayini getirir, distinct eyni olanlari bir deefe getirir
+
+select *,REPLACE(t_name,'as','sa') from sm_telebe   	-- as olan hisseleri deisib sa olaraq cxardir
+select *, REVERSE(t_name) from sm_telebe   		-- tersden yazdirir adlari
+select ABS(-5)  					--  mutleq(musbet ) qiymetini cxarir
+
+t
+select FLOOR(2.7)  					--2  asagi srhede yuvarlaqlasdirir
+select ROUND(2.265525,3)  				--2.266 vergulden sonra 3 hisseye qeder yuvarlaqlasdirir
+select ROUND(hesab,2) from table
+
+select POWER (2,3)  				 	--2 ustu 3 hesablayir cvb 8
+select sqrt(25)  					-- kokaltina salir cvb 5
+sselect sum(column)  from table  			--- cemleyir hamsini	
+
+select DATEDIFF(YEAR,'1995-09-04',GETDATE()) 		-- 1995-de indiye qeder olan ili hesablayir cvb 22
+ \
+select DATEADD(MONTH,10,GETDATE())  			-- ustune 10 ay gelib hmin tarixi ekrana cixardir
+
+
+		--ay uzre hesabat misal
+		select case Month(tarix) when 1 then 'yanvar'
+                         when 2 then 'fevral'
+                         when 3 then 'mart' 
+                         when 4 then 'aprel' 
+                         when 5 then 'may'
+                         when 6 then 'iyun'
+                         when 7 then 'iyul'
+                         
+                         end
+                          
+                          
+                          aylar,sum(mebleg) [mebleg cem],sum(miqdar) [miqdar cem],sum(yekun) [yekun cem],
+        sum(guzest) [guzest cem] 
+  from sm_sob_emel  
+ group by Month(tarix) 
+ order by Month(tarix)
+`
+
+
+	select surname, count (name)  as say from asa  group by surname -- eyni soyaddaolan adamlarin sayi
+--(mentiq budurki cem, say ve s . aggregate funksiya istiade etdikden sonra neye gore qruplasdiriqsa onu yaziriq group by-a)
+----group by en sonda yazilir where sertinden sonra 
+
+
+	select surname,sum(ceki) as [umumi ceki] from asa group by surname   --eyni soyadda olanlarin umumi cekilerini ekrana cxardir 
+
+
+select surname,avg(ceki) as [ortalama] from asa  group by surname   --eyni soyadda olanlarin orta cekilerini ekrana cxardir
+
+
+	select surname ,MAX(ceki),MIN(ceki) from asa group by surname  -- soyad uzre maximum cekide olani ve yaninda hemin soyad uzre en asag cekide olanlari cxarir
+
+
+
+
+select sheher ,SUM (ceki) [cheki]  from asa  group by sheher having COUNT(sheher)>2  
+
+
+	
+insert into asb select * from asa  				-- hazir asb tablesin asa-daki columnlari artirir(column ardicilligina fikir vermek lazimdi)
+
+  insert into asb(name,surname,ceki,sheher) select * from asa  -- secilen columnlara uygun melumatlari artiri
+
+								-- diqeet etmek lazimdi columnlarin tipi eyn olsun ve eyni sayda colunu olsun
+
+select * into asb from asa    					-- asb adli cedvel yaradib icine asa-daki melumatlari artirir
+	  select name into asd from asa  			--asa-daki name-lerden ibaret asd adli cedvelyaratdi(column;arin sayini artirmaq olar)
+
+			
+
+
+	 select * from asa
+	intersect
+	 select * from asb   					-- her iki cedvelde eyni olan sutunlari cixarir(joinlerden biridi) * evezine  konkret column yazib yoxlamaq ola
+	 
+	 
+	 
+	  select * from asa
+	  except
+	  select * from asb   					-- asa-da  olub asb-de olmayan sutunlari cixarir(joinlerden biridi) * evezine  konkret column yazib yoxlamaq ola
+	 
+
+
+
+	  select idn from asb
+	  except
+	  select es_no from asa   				-- meselen  idn-de olub es_no-da olmayn setirleri cixarir (inteersecte de aiddi)  
+
+union all ile union ferqi
+
+								-- union all butun setirleri oldugu kimi artirir sonra diger cedveldeki butun setirleri ekrana cixarir
+
+								-- union eger tekrardisa bunu 1 dfe cixarir
+								-- esas sheert buduki alt alta columnlar eyni tipde olmalidi
+
+select * from asa
+union all
+select * from asb
+
+
+ select * from asb where surname =(select surname from asa where surname='asraf') -- eger altsorgudan bir deyer qaydarsa
+	  
+	  
+ select * from asb where surname in(select surname from asa where surname='cafarli') -- eger bir nece deyer qayidarsa in ile serte yazmaq olar
+
+select name,(select surname from asa where name='asraf') from asb 
+
+
+							--transaction
+
+Begin:   							-- emeliyyat baslangici
+Rollbck:   							--emeliyyati geri alma/texire salma
+Commit:  							-- emeliyyati yaddasa verme
+
+
+for example
+	  begin transaction
+	  update asa set name='asdfg'
+	  select * from asa
+	  rollback
+								--burada update edib neticeni ekrana verdik ancaq rollbaxk etdiyimizden yaddasa yazilmadi deisiklikler. eger commit yazsaydiq tesdiqlemis olardiq
+	  select * from asa
+								--neticelaraq burda evvelki netice(update etmemisden evvelki) cixir ekrana
+
+
+						------Tsql - Transact sql
+
+deyisken , prosedur yazmaq , funksiya yazmaq, trigger yazmaq ve s. 
+				declare deisen tanima
+
+
+			declare					-- declare ile deisen tanyiriq mutleq shekilde qarsida @ olmalidir
+set								-- set ile deisene deyer veririk  deisen adi @ ile baslamagina diqqet etme lazimdi
+print           						-- select-den eerqli olaraq prnt ile deiseni capa versek o select kimi tablede yox message kimi cxacaq ve onu silib ve ya ustunde deisikliketmek olar
+
+
+
+declare @sheher nvarchar(25)  					-- burada nvarchar tipinde bir deisen tanidiq
+declare @kend  nvarchar(25)
+ set @sheher ='Yevlax'       					 --sheher adli deisene   'ashraf' yazisini menimsetdik
+ set @kend='Xaldan'
+
+	print @sheher+ 'in kendi ' +@kend    			-- cvb    Yevlagin kendi Xaldan
+
+
+					--sade emeliyyatlar
+
+				
+	
+	declare @a int,@b int ,@c int 
+	set @a=5 
+	set @b=3
+	set @c=@a+@b
+	select @c   						-- netice  8
+	select @a*@c  						-- netice 40
+	select @c/@a  						--netice 1 (int tipinde bolduyunden)
+
+eger biz bunu nvarchar tipli bir ededle eyni sutunda cxartmaq stesek xeta verecek cunki tipi intdi yeni meselen
+	select 'cavab : '+a --sehv verecek a-int  cavab -varchartipinde oldugundn b
+
+								--cast yuxaridaki prblemi hell etmek ucun cast derek tipi deismek lazimdi  yazilisi:
+				cast(@a as nvarchar) 		-- int tipinde olan a-ni nvaxrhar tipine cevirir
+
+misal:
+					
+	declare @a int,@b int ,@c int 
+	set @a=5 
+	set @b=3
+	set @c=@a+@b
+	select  ' cavab : '+   cast(@c as nvarchar)   		 -- neticede ekranda goruntu  			cavab : 8  
+
+ve yaxud 
+
+
+	print ' cavab : '+   cast(@c as nvarchar)  
+
+	@c=power(@a+@b,2)	  -quvvet
+	@c=sqrt(@a+@b)   	  -kokalti
+
+
+								-- table tipi yaratmaq declare ile
+t-sql-de  table de yarataq lazim ancaq oradaki yaradilan emeliyyatlar her biri db-a yuklenir programmngdeki kimi hemin deisenler islediyi muddet erzinde isleyir meselen
+
+
+
+
+	declare  @t2 table(idn int,name nvarchar(20))  		--t2 adinda bir deisen(table yaratdiq)
+	insert into @t2 values (1,'asraf')
+	insert into @t2 values (2,'samir')
+	
+	select * from @t2	 				-- bu emeliyyatlara birlikde run etdikde isleyir ve netice ekrana cixir
+								--ancaq biz ayri-ayriliqda insertu ve selecti etsek seehv verecek cunki eyni anda ise dusmur ve o deisenler db-a daimi yazilmr
+
+			 	--example  	
+declare @name nvarchar(25), @surname nvarchar(25)
+	set @name='asdfg'
+	set @surname ='2asdfghj'
+	insert into heshim values (@name,@surname)
+	
+	select * from Anbar_db..heshim
+
+
+
+						--output comandalari	(deleted ve inserted)
+declare  @t2 table(name nvarchar(20),surname nvarchar(20))  
+insert into heshim 
+output inserted.name, inserted.surname       			-- output hissesinde ekrana elave olunan melumatlari getrecek(inserted outputun komandasidi)
+into @t2 values('asraf','ceferli')				--into komandasi elave olunani getirir		
+
+select * from @t2						--yeni ekrana neyi elaveetmisikse onu cxaracaq asraf ve ceferli-ni
+select * from heshim		
+
+
+
+
+	
+declare  @t2 table(name nvarchar(20),surname nvarchar(20))  
+delete from heshim
+output deleted.name, deleted.surname       			-- output hissesinde ekrandan silinen  melumatlari getrecek
+into @t2 where name='asraf'
+
+select * from @t2						--yeni ekrandan neyi silmisikse onu cxaracaq asraf ve ceferli-ni
+select * from heshim						--burada artiq hein sutunlar yoxdur
+
+
+
+						--case when istifadesi
+
+select case name 
+when 1 then 'asraf'
+when 2 then 'samir'
+ from person
+
+
+
+						--if else
+		declare @kitabsayi int 
+select  @kitabsayi=count(name) from asa  			-- burada asa-daki namenin countunu set edrik kitabsayina
+
+if (@kitabsayi>5)						-- sert odendikde 1ci yazlan sert ekrana cixacaq
+begin
+print CAST(@kitabsayi as nvarchar)+ ' kifayetdi'   
+end
+else
+begin
+print CAST(@kitabsayi as nvarchar)+ ' kifayet deil'
+end
+
+
+declare @kitabsayi int 
+select  @kitabsayi=count(name) from asa  			-- burada asa-daki namenin countunu set edrik kitabsayina
+
+if (@kitabsayi>9)						-- sert odendikde 1ci yazlan sert ekrana cixacaq
+begin
+print CAST(@kitabsayi as nvarchar)+ ' kifayetdi'   
+end
+else if(@kitabsayi>5)
+begin
+print CAST(@kitabsayi as nvarchar)+ ' kifayet deil'
+end
+else if(@kitabsayi>1)
+begin
+print CAST(@kitabsayi as nvarchar)+ ' kifayet deil'
+end
+
+
+
+								--case when istifadesine misallar
+
+select name,surname,ceki,rayon =case asa.sheher
+								--begin ile baslamaga ehtiyc yoxdu 
+when 'xaldan' then 'kend' 
+when 'baki' then 'sheher' 
+when 'sumqayit' then 'seherason'
+else 'bilinmeyen'						--diger hallarda 
+
+end
+
+					--parametr daxil olmadan
+
+select name,surname,ceki,ceki_derecesi= case      		 -- diqqetle baxilsa case-den sonra daxil olan parametr yazilmayib
+								--sertler when -then daxilinde verilir
+when ceki>50 and ceki<=60 then 'yungul'
+when ceki >60 and ceki <=75 then 'orta'
+when ceki >75 then 'agir'
+else 'normal adam deil'
+end
+from asa
+
+
+from asa							-- netice olaraqsutun adi rayon olr ve uygun neticede uygun cvb cixir
+
+
+
+
+								-- while dovr istifadesi
+										
+declare @deyer int						--1den 10- kmi artirib yazdrdi
+set @deyer=1
+while(@deyer<=10)
+begin
+print @deyer
+ set @deyer=@deyer+1 						--deyerleri 1 1 artirirs
+
+
+end
+
+
+									
+										
+declare @deyer int						--1den 10- kmi artirib yazdrdi
+set @deyer=1
+while(@deyer<=10)
+begin
+print cast(@deyer as nvarchar) +'  say'
+ set @deyer=@deyer+1
+end
+
+
+								--continue,goto	 istifadesi
+
+declare @deyer int
+set @deyer=1
+while(@deyer<=10)
+begin 
+if(@deyer =7)
+begin
+ set @deyer=@deyer+1
+ continue							--pascaldaki anlayis novbeti qiymete kecir
+end
+print cast(@deyer as nvarchar) +'-in kvadrati : ' +cast(@deyer*@deyer as nvarchar)
+set @deyer=@deyer+1
+end
+
+								--goto
+declare @deyer int
+set @deyer=1
+while(@deyer<=10)
+begin 
+if(@deyer =7)
+begin
+ set @deyer=@deyer+1
+ goto get							--pascaldaki anlayis asagitaki get hissesine kecid edir yeni 6-da dayanib dovr
+end
+print cast(@deyer as nvarchar) +'-in kvadrati : ' +cast(@deyer*@deyer as nvarchar)
+set @deyer=@deyer+1
+end
+get:
+
+						--waitfr delay ve time
+								--istenilen kodun evveline bunlari yazsaq erine yetirelecek
+waitfor delay '00:00:15'					--1ci saat,2ci dqiqe,3cu sanie gosterir    misalda 15 sanie sonra kod ise dusur
+waitfor time '00:00:15'						--eyni formada gosterilir ve saat 00.00.15 olduqda kod ise dusecek
+
+
+						--stored procedure 
+							
+								--procedure-lar proramlasdirma dillerindeki kimi parametr alib gerye sadece table qaytarillar
+								--bezen parametr almayib sadece table de qaytara bilirler
+		
+			
+						--3 cur stored prosedure var
+								--1.system stored procedure
+								--2.extended stored procedure
+								--3.local stored procedure(buna baxacagiq)
+		
+		
+	create procedure s
+	as
+	select * from asa where name='asraf'       		-- burada execute etdikden sonra gedib yaddasda qalir bu unvandan baxa bilerik
+								-- db-->Programmability-->Stored Proceedures icerisinde yaddasa dusur
+												
+								-- yaddasda olaniisee salmaq ucun 'exec procedure_name' yaziriq
+	
+	exec s							--burdaki kimi
+	
+								--movcud adda procedura deisiklik etmek cun alter silmek ucun drop
+alter procedure s
+as
+select 'asdfghj'
+
+drop  procedure s						-- silinmesi
+
+
+set nocount on							--yazib altinda select yazib isletdikde command succesfully kimi mesaj cxir
+
+set nocount off							-- yazsaq aaltinda da seectv neqedercdvel teesir oldugunu getirir	 messages bolmesinde	
+
+								--eger parametr alib procedure daxilinde isletmek isteyirikse bele yaziriq
+
+create procedure toplam (@say1 integer,@say2 integer,@netice integer output)
+								--3 parmetr girir. @neticeqarsisinda outpu yazib yeni eyi zamanda cixis parametri olacaq
+			as
+			set @netice=@say1+@say2
+						
+							
+			declare @t int				--@t-ni ucuncu parametr kimi gondermek ucun yaradiriq
+			exec toplam 5,3,@t output		-- burada procedura parametr gonderirik ve @t-e parametr qaytarir
+			print @t				-- qayitmis neticeni capa veririk
+							
+						--netice			8
+				
+								--Eynisini ferqli cur de yaza bilerik
+									
+alter procedure toplam(@say1 int,@say2 int)   			--Burada artiq geriye qiymet qaytarmayib hesablamani proceedure daxilinde edririk
+as
+declare @say3 int						--deisen teyin olunur(giren 2 parametrden elave olaraq netice elde etmek ucun)
+set @say3=@say1*@say2
+print @say3							--hemin deisen capa veririk
+
+
+exec toplam 5,20						--parametreri gondererk procedure daxilinde netice aliriq
+
+								--netice 100 cxacaq
+
+
+
+
+create procedure hasiller (@a int,@b int ,@c int ,@cem int output)
+as
+set @cem = @a*@b*@c
+print 'cavab : '+ cast(@cem as nvarchar)
+								--bunu execute edib yaddasa verib
+declare @hasil int
+exec hasiller 10,21,32,@hasil output
+							
+							
+select * from asa						--cekileri mueyen araliqda  olanlari procedure-la sadeformada getirmek istirik
+
+create procedure asa_araliq(@asagi int,@yuxari int)
+as
+select * from asa where ceki between @asagi and @yuxari		-- bunu yaziriq procedurede ve dyerlere uygun netice cixir
+							
+exec asa_araliq 50 ,78   					-- hemin proqrami ise saldiqda cekileri 50 ve 78 araliginda olanlari ekrana getirecek
+
+
+
+
+							--Function
+								--sklyar funksiyalar geriye 1 parametr qaytaran parametrlerdi
+								--return geriye 1 deyer dondurur ,returns tipini de dondrur
+--boyukherfe ceviren funksiya yazaq
+
+create function boyukherf(@gelen varchar(25))
+returns varchar(25)						--qaytarilan parametr
+as	
+begin
+return upper(@gelen)
+end
+
+
+
+select dbo.boyukherf(name) from asa  				--qarssinda dbo. yazaraq hemin funksiya yazib icine parametr gondriririk
+								--ve funksiyada uygun qiymeti alariq
+
+
+create function say(@gelen varchar(20))
+returns int
+as
+begin
+declare @sayi int
+select @sayi=COUNT(asa.sheher) from asa where asa.sheher = @gelen
+return @sayi							--bura geri qaytarilan dyer yazilir 
+end
+
+
+select dbo.say('baki')						--lazim olan sheherin adi yazilir ve uygun netice funksiyaya qaytarilir
+
+
+
+						--table qaytaran function
+
+
+								--geriye tablee qaytaran function misalina baxaq
+									
+	create function Kitabxali (@gelen int)
+	returns table
+	as
+	return (select * from asa where asa.ceki >@gelen)_
+	
+	
+	select * from dbo.Kitabxali(75)				-- artiq fromdan sonra yaziriq table qaytardigi ucun
+
+
+
+
+
+
+						-- trigger
+								--bir cedvel uzerinde emeliyyat etdikde basqa cedvele de tesir etsin eye triggerden istifade olunur
+
+								--yaratdiqda cedvelin altinda olan triggers hissesinde emele gelir 
+create trigger Yoxlama						--yoxlama adinda triggeryaradilir
+on asa								--asa cedvelinde uzerindeki emeliyyat
+after insert							--insert etdikden sonra ekrana cixsi netice 
+as 
+begin
+select 'suucefully'	as netice				-- ekrana bu netice cixsin
+end
+
+
+insert into asa values('sdf','sdfg',21,'sdfg') 			--bu emelyyati etdikden sonra o netice cixir
+
+
+						--diger misal
+create trigger yoxlama2
+on asa	
+after insert
+as
+begin
+select name,surname,ceki=ceki+20 from asa where sheher='baki'
+end
+
+
+
+insert into asa values('sd','sdf',7,'df') 			--netice olaraq hemin neice ekrana cxr
+
+								--!! Evvel basqa triggeri de asa-ya bagladigimizdan 2cedvel eyni zamanda ise dusecek
+
+create table saygac(say int)
+select * from saygac
+
+						--saygac uzerinde baxaq ve nece defe update oldugunu gore bilek
+						
+create trigger saygackontrol
+on asa								--hansi cedvel uzerinde deisiklik oldugunu secirik
+
+after update 
+as begin
+update saygac set say=say+1
+select 'succesfully update'
+end
+
+update  asa set name='taaa' where asa.sheher='baki' 		--her update etdikde +1 artiee trigger sayesinde
+
+						--Trigger with delete 
+
+create trigger silmekontrol 
+on asa
+after delete 
+as
+begin
+select 'deleted succesfully 4 nidayla' as 'succes'
+end
+
+
+delete from asa where sheher='df'
+
+
+								--after delete,after insert, after update mentiqi eynidi
+
